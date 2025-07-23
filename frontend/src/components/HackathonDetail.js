@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Button, Typography, Tag, Card, Row, Col, Timeline, Statistic, Alert, Spin } from 'antd';
 import { 
-  Button, Tag, Card, Image, Carousel, Timeline, Statistic, 
-  Row, Col, Typography, Space, Divider 
-} from 'antd';
-import { 
-  ArrowLeftOutlined, GithubOutlined, 
-  TrophyOutlined, CalendarOutlined, TeamOutlined,
-  EyeOutlined, LinkedinOutlined, PlayCircleOutlined
+  ArrowLeftOutlined, 
+  CalendarOutlined, 
+  EnvironmentOutlined, 
+  TeamOutlined, 
+  TrophyOutlined,
+  GithubOutlined,
+  LinkOutlined,
+  PlayCircleOutlined,
+  LoadingOutlined,
+  LeftOutlined,
+  RightOutlined
 } from '@ant-design/icons';
-import { FiCode, FiUsers, FiAward } from 'react-icons/fi';
 import './HackathonDetail.css';
 
 const { Title, Paragraph, Text } = Typography;
@@ -19,559 +23,341 @@ const HackathonDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [hackathon, setHackathon] = useState(null);
+  
+  // Use static data
+  useEffect(() => {
+    // Simulate loading
+    setTimeout(() => {
+      // Static hackathon data
+      const staticHackathons = [
+        {
+          id: "1",
+          title: "Code-a-Haunt Halloween Hackathon",
+          organization: "Code-a-Haunt 2024",
+          position: "Participant",
+          date: "October 2024",
+          location: "Virtual",
+          description: "Spooky themed hackathon where we created Halloween-inspired tech solutions with a creative twist. Developed interactive Halloween games and AR experiences for a memorable spooky season.",
+          technologies: ["Python", "Flask", "JavaScript", "CSS"],
+          team_size: 3,
+          duration: "48 hours",
+          prize_amount: 8000,
+          image_url: "/photo/code-a-haunt/main.jpg",
+          gallery: ["/photo/code-a-haunt/main.jpg"],
+          github_url: "https://github.com/SreeCharanMAQ/code-a-haunt",
+          demo_url: "https://code-a-haunt-demo.netlify.app",
+          team_members: [
+            { name: "K Sree Charan", role: "Full Stack Developer" },
+            { name: "Taylor Rodriguez", role: "UX Designer" },
+            { name: "Jordan Lee", role: "Backend Developer" }
+          ],
+          participants: 80,
+          teams: 25,
+          problem_statement: "Create engaging Halloween-themed interactive experiences using modern web technologies",
+          solution: "We developed a haunted house virtual experience with interactive elements and jump scares"
+        },
+        {
+          id: "2",
+          title: "Code of Duty Gaming Hackathon",
+          organization: "Gaming Community 2024",
+          position: "Winner",
+          date: "September 2024",
+          location: "Bangalore",
+          description: "Gaming-focused hackathon where we developed innovative gaming solutions and interactive experiences. Our team created a real-time multiplayer gaming platform that impressed judges with its performance and engagement features.",
+          technologies: ["Unity", "C#", "JavaScript", "WebGL"],
+          team_size: 4,
+          duration: "72 hours",
+          prize_amount: 20000,
+          image_url: "/photo/code-of-duty/2.jpg", // Using a different image
+          gallery: [
+            "/photo/code-of-duty/2.jpg", 
+            "/photo/code-of-duty/main.jpg", 
+            "/photo/code-of-duty/1.jpg", 
+            "/photo/code-of-duty/3.jpg",
+            "/photo/code-of-duty/4.jpg",
+            "/photo/code-of-duty/5.jpg"
+          ],
+          github_url: "https://github.com/SreeCharanMAQ/code-of-duty",
+          demo_url: "https://code-of-duty-demo.netlify.app",
+          team_members: [
+            { name: "K Sree Charan", role: "Game Developer" },
+            { name: "Samantha Wright", role: "3D Artist" },
+            { name: "David Kim", role: "Unity Developer" },
+            { name: "Emily Chen", role: "Game Designer" }
+          ],
+          participants: 150,
+          teams: 35,
+          problem_statement: "Develop an innovative gaming solution that pushes the boundaries of multiplayer experiences",
+          solution: "Created a cross-platform multiplayer game with real-time interaction and low-latency networking"
+        },
+        {
+          id: "3",
+          title: "Code Cubicle by Microsoft",
+          organization: "Microsoft & Geek Room",
+          position: "3rd Runners-up",
+          date: "August 2024",
+          location: "Hyderabad",
+          description: "Incredible journey to becoming 3rd runners-up at the Code Cubicle by Geek Room at Microsoft! Team 'The Losers' built our entire project in just 7 days! We developed a comprehensive data analysis platform with advanced visualization capabilities.",
+          technologies: ["Python", "Streamlit", "Web Scraping", "Data Science"],
+          team_size: 5,
+          duration: "7 days",
+          prize_amount: 5000,
+          image_url: "/photo/microsoft/3.jpg", // Using a different image
+          gallery: [
+            "/photo/microsoft/3.jpg", 
+            "/photo/microsoft/main.jpg", 
+            "/photo/microsoft/1.jpg", 
+            "/photo/microsoft/2.jpg",
+            "/photo/microsoft/4.jpg",
+            "/photo/microsoft/5.jpg",
+            "/photo/microsoft/6.jpg",
+            "/photo/microsoft/7.jpg"
+          ],
+          github_url: "https://github.com/SreeCharanMAQ/code-cubicle",
+          demo_url: "https://code-cubicle-demo.netlify.app",
+          team_members: [
+            { name: "K Sree Charan", role: "Team Lead" },
+            { name: "Raj Patel", role: "Data Scientist" },
+            { name: "Priya Sharma", role: "Frontend Developer" },
+            { name: "Michael Brown", role: "Backend Developer" },
+            { name: "Lisa Johnson", role: "UI/UX Designer" }
+          ],
+          participants: 200,
+          teams: 40,
+          problem_statement: "Create a data analytics solution that makes complex data accessible to non-technical users",
+          solution: "Built an intuitive data visualization platform with automated insights and recommendations"
+        },
+        {
+          id: "4",
+          title: "Code Fusion Hackathon",
+          organization: "Chandigarh University",
+          position: "Winner",
+          date: "June 2024",
+          location: "Chandigarh",
+          description: "Developed an innovative job portal with AI features including resume builder, personalized roadmap builder, and chatbot assistance. Our solution helps job seekers optimize their applications and career paths.",
+          technologies: ["React", "AI/ML", "Full Stack", "UI/UX"],
+          team_size: 4,
+          duration: "36 hours",
+          prize_amount: 15000,
+          image_url: "/photo/other/3.jpg", // Using a different image
+          gallery: ["/photo/other/3.jpg", "/photo/other/main.jpg"],
+          github_url: "https://github.com/SreeCharanMAQ/code-fusion",
+          demo_url: "https://code-fusion-demo.netlify.app",
+          team_members: [
+            { name: "K Sree Charan", role: "Full Stack Developer" },
+            { name: "Aditya Singh", role: "AI Engineer" },
+            { name: "Nisha Verma", role: "Frontend Developer" },
+            { name: "Vikram Shah", role: "UX Researcher" }
+          ],
+          participants: 120,
+          teams: 30,
+          problem_statement: "Create a solution that addresses challenges in the job search and recruitment process",
+          solution: "Developed an AI-powered job portal that personalizes the job search experience and provides actionable insights"
+        },
+        {
+          id: "5",
+          title: "EdTech Innovation Sprint",
+          organization: "TechCrunch Disrupt 2024",
+          position: "Winner",
+          date: "March 2024",
+          location: "Mumbai",
+          description: "Created an innovative educational technology platform that personalizes learning experiences based on individual student needs and learning styles. Our solution uses AI to adapt content difficulty and presentation.",
+          technologies: ["React", "Node.js", "AI/ML", "Educational Psychology"],
+          team_size: 4,
+          duration: "48 hours",
+          prize_amount: 25000,
+          image_url: "/photo/other/1.png", // Using a different image
+          gallery: ["/photo/other/1.png", "/photo/other/2.png", "/photo/other/main.jpg"],
+          github_url: "https://github.com/SreeCharanMAQ/edtech-sprint",
+          demo_url: "https://edtech-sprint-demo.netlify.app",
+          team_members: [
+            { name: "K Sree Charan", role: "Full Stack Developer" },
+            { name: "Meera Patel", role: "Education Specialist" },
+            { name: "Jason Wong", role: "AI Engineer" },
+            { name: "Sophie Anderson", role: "UI/UX Designer" }
+          ],
+          participants: 90,
+          teams: 22,
+          problem_statement: "Design a solution that makes education more personalized, engaging, and effective",
+          solution: "Built an adaptive learning platform that customizes content delivery based on individual learning patterns"
+        },
+        {
+          id: "6",
+          title: "DevFest Jalandhar 2024",
+          organization: "Google Developer Groups",
+          position: "Winner",
+          date: "December 2024",
+          location: "Jalandhar",
+          description: "Won DevFest Jalandhar, a tech conference hosted by Google Developer Groups Jalandhar, bringing developers together to learn and innovate. Judges were so impressed that they awarded us monetary rewards and goodies, including exclusive event T-shirts.",
+          technologies: ["React", "Node.js", "AI/ML", "Google Cloud"],
+          team_size: 4,
+          duration: "48 hours",
+          prize_amount: 15000,
+          image_url: "/photo/devfest/4.jpg", // Using a different image
+          gallery: [
+            "/photo/devfest/4.jpg", 
+            "/photo/devfest/main.jpg",
+            "/photo/devfest/1.jpg",
+            "/photo/devfest/2.jpg",
+            "/photo/devfest/3.jpg",
+            "/photo/devfest/5.jpg"
+          ],
+          github_url: "https://github.com/SreeCharanMAQ/devfest-project",
+          demo_url: "https://devfest-project.netlify.app",
+          team_members: [
+            { name: "K Sree Charan", role: "Full Stack Developer" },
+            { name: "Alex Johnson", role: "UI/UX Designer" },
+            { name: "Sarah Kim", role: "Backend Developer" },
+            { name: "Mike Chen", role: "DevOps Engineer" }
+          ],
+          participants: 120,
+          teams: 30,
+          problem_statement: "Build solutions using Google technologies to solve real-world problems",
+          solution: "Created a comprehensive platform leveraging Google Cloud services for community problem-solving"
+        },
+        {
+          id: "5",
+          title: "Arena Hackathon 2024",
+          organization: "Arena Tech Challenge",
+          position: "Runner-up",
+          date: "October 2024",
+          location: "Mumbai",
+          description: "Arena Tech Challenge hackathon where we built innovative solutions and competed with talented developers from across the region.",
+          technologies: ["JavaScript", "React", "Node.js", "MongoDB"],
+          team_size: 4,
+          duration: "24 hours",
+          prize_amount: 12000,
+          image_url: "/photo/arena/main.jpg",
+          gallery: ["/photo/arena/main.jpg", "/photo/arena/1.jpg", "/photo/arena/2.jpg", "/photo/arena/3.jpg"],
+          github_url: "https://github.com/SreeCharanMAQ/arena-project",
+          demo_url: "https://arena-project.netlify.app",
+          team_members: [
+            { name: "K Sree Charan", role: "Team Lead" },
+            { name: "John Doe", role: "Frontend Developer" },
+            { name: "Jane Smith", role: "Backend Developer" },
+            { name: "Bob Johnson", role: "UI/UX Designer" }
+          ],
+          participants: 80,
+          teams: 20
+        }
+      ];
+      
+      // Find the hackathon with matching ID
+      const foundHackathon = staticHackathons.find(h => h.id === id);
+      
+      if (foundHackathon) {
+        setHackathon(foundHackathon);
+        setError(null);
+      } else {
+        setError('Hackathon not found');
+      }
+      
+      setLoading(false);
+    }, 500);
+  }, [id]);
 
-  // Comprehensive hackathon data with detailed project information
-  const hackathonData = {
-    1: {
-      id: 1,
-      title: "Smart City Solutions Hackathon",
-      event: "TechFest 2024",
-      position: "🥇 1st Place Winner",
-      date: "March 15-17, 2024",
-      location: "IIT Bombay, Mumbai",
-      description: "Developed an AI-powered traffic management system that reduces congestion by 30% using real-time data analysis and machine learning algorithms.",
-      problemStatement: "Urban traffic congestion costs cities billions annually. Traditional traffic management systems are reactive rather than predictive, leading to inefficient traffic flow and increased pollution.",
-      solution: "Our AI-powered system uses real-time traffic data, weather conditions, and event schedules to predict and prevent traffic congestion before it happens.",
-      technologies: ["React", "Python", "TensorFlow", "MongoDB", "Redis", "Socket.io", "Docker"],
-      team: [
-        { name: "Sree Charan", role: "Full Stack Developer & Team Lead" },
-        { name: "Priya Singh", role: "AI/ML Engineer" },
-        { name: "Rajesh Kumar", role: "Backend Developer" },
-        { name: "Anita Sharma", role: "UI/UX Designer" }
-      ],
-      prize: "₹50,000 + Internship Opportunity",
-      participants: 200,
-      teams: 50,
-      duration: "48 hours",
-      theme: "Smart Cities & Sustainable Development",
-      
-      // Project Images
-      images: [
-        "/hackathon1-cover.jpg",
-        "/hackathon1-demo.jpg", 
-        "/hackathon1-team.jpg",
-        "/hackathon1-presentation.jpg",
-        "/hackathon1-certificate.jpg",
-        "/hackathon1-working.jpg"
-      ],
-      
-      // Project Links
-      links: {
-        github: "https://github.com/sreecharan/smart-traffic",
-        demo: "https://smart-traffic-demo.vercel.app",
-        linkedin: "https://linkedin.com/posts/sreecharan/smart-city-hackathon",
-        presentation: "https://slides.com/sreecharan/smart-traffic",
-        video: "https://youtube.com/watch?v=demo123"
-      },
-      
-      // Technical Details
-      features: [
-        "Real-time Traffic Monitoring",
-        "Predictive Analytics Dashboard", 
-        "Smart Signal Optimization",
-        "Emergency Vehicle Priority",
-        "Air Quality Integration",
-        "Mobile App for Citizens"
-      ],
-      
-      // Development Timeline
-      timeline: [
-        { time: "Day 1 - 6 PM", event: "Problem Analysis & Team Formation" },
-        { time: "Day 1 - 10 PM", event: "Solution Design & Architecture Planning" },
-        { time: "Day 2 - 2 AM", event: "Backend API Development Started" },
-        { time: "Day 2 - 8 AM", event: "AI Model Training Completed" },
-        { time: "Day 2 - 2 PM", event: "Frontend Development & Integration" },
-        { time: "Day 2 - 8 PM", event: "Testing & Bug Fixes" },
-        { time: "Day 3 - 10 AM", event: "Final Presentation Preparation" },
-        { time: "Day 3 - 2 PM", event: "Project Presentation & Demo" }
-      ],
-      
-      // Impact & Results
-      impact: {
-        congestionReduction: "30%",
-        responseTime: "45%",
-        fuelSaving: "25%",
-        userSatisfaction: "92%"
-      },
-      
-      // Recognition
-      recognition: [
-        "Best Technical Innovation Award",
-        "Judges' Choice Award", 
-        "Audience Favorite",
-        "Featured in TechCrunch Article"
-      ]
-    },
-    
-    2: {
-      id: 2,
-      title: "FinTech Innovation Challenge",
-      event: "Banking Summit 2024",
-      position: "🥇 1st Place Winner",
-      date: "February 10-12, 2024",
-      location: "NASSCOM, Bangalore",
-      description: "Created a blockchain-based micro-lending platform for rural communities with 99.9% security rating and automated risk assessment.",
-      problemStatement: "Rural communities lack access to formal banking and credit systems, forcing them to rely on high-interest informal lenders.",
-      solution: "A decentralized lending platform using blockchain technology for transparency, smart contracts for automation, and AI for risk assessment.",
-      technologies: ["Blockchain", "Solidity", "React", "Node.js", "Web3.js", "MongoDB", "Python"],
-      team: [
-        { name: "Sree Charan", role: "Blockchain Developer & Lead" },
-        { name: "Arvind Mehta", role: "Smart Contract Developer" },
-        { name: "Sneha Patel", role: "Frontend Developer" }
-      ],
-      prize: "₹75,000 + Incubation Support",
-      participants: 150,
-      teams: 30,
-      duration: "48 hours",
-      theme: "Financial Inclusion & Digital Banking",
-      
-      images: [
-        "/hackathon2-cover.jpg",
-        "/hackathon2-blockchain.jpg",
-        "/hackathon2-team.jpg", 
-        "/hackathon2-demo.jpg",
-        "/hackathon2-award.jpg",
-        "/hackathon2-presentation.jpg"
-      ],
-      
-      links: {
-        github: "https://github.com/sreecharan/rural-lending",
-        demo: "https://rural-lending-demo.netlify.app",
-        linkedin: "https://linkedin.com/posts/sreecharan/fintech-hackathon",
-        whitepaper: "https://docs.google.com/rural-lending-whitepaper",
-        video: "https://youtube.com/watch?v=fintech456"
-      },
-      
-      features: [
-        "Blockchain-based Transparency",
-        "Smart Contract Automation",
-        "AI Risk Assessment",
-        "Multi-language Support",
-        "Offline Capability",
-        "Mobile-first Design"
-      ],
-      
-      timeline: [
-        { time: "Day 1 - 5 PM", event: "Market Research & Problem Validation" },
-        { time: "Day 1 - 9 PM", event: "Blockchain Architecture Design" },
-        { time: "Day 2 - 1 AM", event: "Smart Contract Development" },
-        { time: "Day 2 - 9 AM", event: "Frontend Interface Development" },
-        { time: "Day 2 - 3 PM", event: "AI Model Integration" },
-        { time: "Day 2 - 9 PM", event: "Testing & Security Audit" },
-        { time: "Day 3 - 11 AM", event: "Demo Preparation" },
-        { time: "Day 3 - 3 PM", event: "Final Pitch & Demo" }
-      ],
-      
-      impact: {
-        securityRating: "99.9%",
-        processingTime: "80%",
-        costReduction: "60%",
-        accessibilityIncrease: "300%"
-      },
-      
-      recognition: [
-        "Best FinTech Innovation",
-        "Social Impact Award",
-        "Technical Excellence",
-        "Potential for Scale Award"
-      ]
-    },
-    
-    3: {
-      id: 3,
-      title: "Healthcare AI Hackathon",
-      event: "MedTech 2023",
-      position: "🥈 2nd Place Winner", 
-      date: "December 8-10, 2023",
-      location: "AIIMS, New Delhi",
-      description: "Built an AI diagnostic tool for early detection of diseases using medical imaging with 95% accuracy.",
-      problemStatement: "Early disease detection is crucial for treatment success, but medical imaging analysis is time-consuming and requires specialized expertise.",
-      solution: "An AI-powered diagnostic assistant that analyzes medical images and provides preliminary diagnosis with confidence scores.",
-      technologies: ["Python", "PyTorch", "Flask", "OpenCV", "NumPy", "DICOM", "React"],
-      team: [
-        { name: "Sree Charan", role: "AI/ML Engineer & Lead" },
-        { name: "Dr. Kavitha Reddy", role: "Medical Advisor" },
-        { name: "Rohit Sharma", role: "Backend Developer" },
-        { name: "Deepika Jain", role: "Frontend Developer" },
-        { name: "Arjun Patel", role: "Data Scientist" }
-      ],
-      prize: "₹40,000 + Research Publication",
-      participants: 180,
-      teams: 45,
-      duration: "60 hours",
-      theme: "AI in Healthcare",
-      
-      images: [
-        "/hackathon3-cover.jpg",
-        "/hackathon3-ai-model.jpg",
-        "/hackathon3-team.jpg",
-        "/hackathon3-demo.jpg", 
-        "/hackathon3-award.jpg",
-        "/hackathon3-presentation.jpg"
-      ],
-      
-      links: {
-        github: "https://github.com/sreecharan/medical-ai-diagnosis",
-        demo: "https://medical-ai-demo.herokuapp.com",
-        linkedin: "https://linkedin.com/posts/sreecharan/healthcare-ai-hackathon",
-        paper: "https://arxiv.org/sreecharan-medical-ai-2023",
-        video: "https://youtube.com/watch?v=health789"
-      },
-      
-      features: [
-        "Medical Image Analysis",
-        "Disease Classification", 
-        "Confidence Scoring",
-        "DICOM File Support",
-        "Multi-modal Analysis",
-        "Doctor Dashboard"
-      ],
-      
-      timeline: [
-        { time: "Day 1 - 4 PM", event: "Medical Domain Research" },
-        { time: "Day 1 - 8 PM", event: "Dataset Collection & Preprocessing" },
-        { time: "Day 2 - 2 AM", event: "AI Model Architecture Design" },
-        { time: "Day 2 - 10 AM", event: "Model Training & Validation" },
-        { time: "Day 2 - 6 PM", event: "Web Interface Development" },
-        { time: "Day 3 - 2 AM", event: "Integration & Testing" },
-        { time: "Day 3 - 10 AM", event: "Medical Expert Review" },
-        { time: "Day 3 - 4 PM", event: "Final Presentation" }
-      ],
-      
-      impact: {
-        accuracy: "95%",
-        processingTime: "75%",
-        diagnosticSpeed: "400%",
-        doctorApproval: "88%"
-      },
-      
-      recognition: [
-        "Best Healthcare Innovation",
-        "Technical Excellence Award",
-        "Clinical Impact Recognition",
-        "Research Publication Opportunity"
-      ]
-    },
-    
-    4: {
-      id: 4,
-      title: "EdTech Innovation Challenge",
-      event: "EduTech Summit 2023",
-      position: "🥇 1st Place Winner",
-      date: "October 20-22, 2023",
-      location: "IIT Delhi, Delhi",
-      description: "Created an adaptive learning platform using AI to personalize education for students with different learning styles.",
-      problemStatement: "Traditional education systems follow one-size-fits-all approach, failing to cater to individual learning styles and paces.",
-      solution: "An AI-powered adaptive learning platform that customizes content delivery based on individual learning patterns and preferences.",
-      technologies: ["React", "Node.js", "TensorFlow", "MongoDB", "Socket.io", "WebRTC", "AWS"],
-      team: [
-        { name: "Sree Charan", role: "Full Stack Developer & Lead" },
-        { name: "Meera Gupta", role: "Educational Psychologist" },
-        { name: "Kiran Kumar", role: "AI/ML Engineer" },
-        { name: "Pooja Singh", role: "UI/UX Designer" }
-      ],
-      prize: "₹60,000 + Startup Incubation",
-      participants: 220,
-      teams: 55,
-      duration: "48 hours",
-      theme: "Personalized Learning & EdTech",
-      
-      images: [
-        "/hackathon4-cover.jpg",
-        "/hackathon4-platform.jpg",
-        "/hackathon4-team.jpg",
-        "/hackathon4-demo.jpg",
-        "/hackathon4-award.jpg",
-        "/hackathon4-students.jpg"
-      ],
-      
-      links: {
-        github: "https://github.com/sreecharan/adaptive-learning",
-        demo: "https://adaptive-learning-demo.netlify.app",
-        linkedin: "https://linkedin.com/posts/sreecharan/edtech-hackathon",
-        presentation: "https://slides.com/sreecharan/adaptive-learning",
-        video: "https://youtube.com/watch?v=edtech101"
-      },
-      
-      features: [
-        "Adaptive Content Delivery",
-        "Learning Style Analysis",
-        "Progress Tracking",
-        "Interactive Assessments",
-        "Peer Collaboration",
-        "Teacher Analytics Dashboard"
-      ],
-      
-      timeline: [
-        { time: "Day 1 - 5 PM", event: "Educational Research & Problem Analysis" },
-        { time: "Day 1 - 9 PM", event: "Learning Algorithm Design" },
-        { time: "Day 2 - 1 AM", event: "Backend Development & AI Integration" },
-        { time: "Day 2 - 9 AM", event: "Frontend Interface Creation" },
-        { time: "Day 2 - 3 PM", event: "Content Management System" },
-        { time: "Day 2 - 9 PM", event: "Testing with Sample Students" },
-        { time: "Day 3 - 11 AM", event: "Final Adjustments" },
-        { time: "Day 3 - 3 PM", event: "Demo & Presentation" }
-      ],
-      
-      impact: {
-        learningImprovement: "65%",
-        engagementIncrease: "80%", 
-        completionRate: "90%",
-        teacherSatisfaction: "95%"
-      },
-      
-      recognition: [
-        "Best EdTech Innovation",
-        "Social Impact Award",
-        "Jury's Choice Award",
-        "Startup Incubation Offer"
-      ]
-    },
-    
-    5: {
-      id: 5,
-      title: "Sustainable Energy Hackathon",
-      event: "GreenTech 2023",
-      position: "🥇 1st Place Winner",
-      date: "September 15-17, 2023",
-      location: "IIT Bombay, Mumbai",
-      description: "Developed a smart grid optimization system for renewable energy distribution with 40% efficiency improvement.",
-      problemStatement: "Traditional power grids struggle to efficiently manage renewable energy sources due to their intermittent nature.",
-      solution: "An AI-powered smart grid system that predicts energy demand and optimizes renewable energy distribution in real-time.",
-      technologies: ["Python", "TensorFlow", "IoT", "React", "Node.js", "InfluxDB", "Grafana"],
-      team: [
-        { name: "Sree Charan", role: "Systems Engineer & Lead" },
-        { name: "Vikram Reddy", role: "Energy Systems Specialist" },
-        { name: "Nisha Agarwal", role: "IoT Developer" },
-        { name: "Rajesh Menon", role: "Data Analyst" }
-      ],
-      prize: "₹80,000 + Patent Support",
-      participants: 160,
-      teams: 40,
-      duration: "48 hours",
-      theme: "Sustainable Energy & Smart Grids",
-      
-      images: [
-        "/hackathon5-cover.jpg",
-        "/hackathon5-smartgrid.jpg",
-        "/hackathon5-team.jpg",
-        "/hackathon5-demo.jpg",
-        "/hackathon5-award.jpg",
-        "/hackathon5-prototype.jpg"
-      ],
-      
-      links: {
-        github: "https://github.com/sreecharan/smart-grid-optimization",
-        demo: "https://smart-grid-demo.vercel.app",
-        linkedin: "https://linkedin.com/posts/sreecharan/sustainable-energy",
-        whitepaper: "https://docs.google.com/smart-grid-whitepaper",
-        video: "https://youtube.com/watch?v=energy123"
-      },
-      
-      features: [
-        "Real-time Energy Monitoring",
-        "Demand Prediction",
-        "Renewable Energy Optimization", 
-        "Grid Load Balancing",
-        "IoT Sensor Integration",
-        "Energy Analytics Dashboard"
-      ],
-      
-      timeline: [
-        { time: "Day 1 - 6 PM", event: "Energy Grid Analysis" },
-        { time: "Day 1 - 10 PM", event: "IoT Architecture Design" },
-        { time: "Day 2 - 2 AM", event: "Prediction Algorithm Development" },
-        { time: "Day 2 - 8 AM", event: "Hardware Prototype Building" },
-        { time: "Day 2 - 2 PM", event: "Software Integration" },
-        { time: "Day 2 - 8 PM", event: "System Testing & Validation" },
-        { time: "Day 3 - 10 AM", event: "Performance Optimization" },
-        { time: "Day 3 - 2 PM", event: "Final Demo & Pitch" }
-      ],
-      
-      impact: {
-        energyEfficiency: "40%",
-        carbonReduction: "35%",
-        costSavings: "50%",
-        gridStability: "85%"
-      },
-      
-      recognition: [
-        "Best Sustainability Solution",
-        "Innovation Excellence",
-        "Environmental Impact Award",
-        "Patent Filing Support"
-      ]
-    },
-    
-    6: {
-      id: 6,
-      title: "Cybersecurity Defense Challenge", 
-      event: "SecureCode 2023",
-      position: "🥈 2nd Place Winner",
-      date: "August 25-27, 2023",
-      location: "NASSCOM, Bangalore",
-      description: "Built an AI-powered threat detection system for real-time cybersecurity monitoring with 99.2% accuracy.",
-      problemStatement: "Traditional cybersecurity systems rely on signature-based detection, making them vulnerable to zero-day attacks.",
-      solution: "An AI-powered threat detection system using machine learning to identify anomalous behavior patterns in real-time.",
-      technologies: ["Python", "Scikit-learn", "Elasticsearch", "Kibana", "Docker", "Flask", "React"],
-      team: [
-        { name: "Sree Charan", role: "Security Engineer & Lead" },
-        { name: "Amit Sharma", role: "Cybersecurity Specialist" },
-        { name: "Priya Nair", role: "ML Engineer" },
-        { name: "Sachin Joshi", role: "DevOps Engineer" }
-      ],
-      prize: "₹45,000 + Security Certification",
-      participants: 140,
-      teams: 35,
-      duration: "60 hours",
-      theme: "AI-Powered Cybersecurity",
-      
-      images: [
-        "/hackathon6-cover.jpg",
-        "/hackathon6-security.jpg",
-        "/hackathon6-team.jpg",
-        "/hackathon6-demo.jpg",
-        "/hackathon6-award.jpg",
-        "/hackathon6-dashboard.jpg"
-      ],
-      
-      links: {
-        github: "https://github.com/sreecharan/ai-threat-detection",
-        demo: "https://threat-detection-demo.herokuapp.com",
-        linkedin: "https://linkedin.com/posts/sreecharan/cybersecurity-ai",
-        documentation: "https://docs.sreecharan.com/threat-detection",
-        video: "https://youtube.com/watch?v=cyber456"
-      },
-      
-      features: [
-        "Real-time Threat Detection",
-        "Anomaly Pattern Recognition",
-        "Automated Response System",
-        "Network Traffic Analysis",
-        "Incident Management",
-        "Security Compliance Reporting"
-      ],
-      
-      timeline: [
-        { time: "Day 1 - 4 PM", event: "Threat Landscape Analysis" },
-        { time: "Day 1 - 8 PM", event: "ML Model Architecture Design" },
-        { time: "Day 2 - 12 AM", event: "Data Collection & Preprocessing" },
-        { time: "Day 2 - 8 AM", event: "Model Training & Validation" },
-        { time: "Day 2 - 4 PM", event: "Real-time Detection Engine" },
-        { time: "Day 2 - 10 PM", event: "Dashboard Development" },
-        { time: "Day 3 - 8 AM", event: "Security Testing" },
-        { time: "Day 3 - 4 PM", event: "Final Security Demo" }
-      ],
-      
-      impact: {
-        detectionAccuracy: "99.2%",
-        responseTime: "85%",
-        falsePositives: "95%",
-        threatCoverage: "92%"
-      },
-      
-      recognition: [
-        "Best Security Innovation",
-        "Technical Excellence",
-        "Industry Choice Award",
-        "Security Certification Scholarship"
-      ]
-    },
-    
-    7: {
-      id: 7,
-      title: "Social Impact Tech Challenge",
-      event: "Impact Innovators 2023",
-      position: "🥇 1st Place Winner",
-      date: "July 14-16, 2023",
-      location: "Social Alpha, Bangalore",
-      description: "Created a disaster management platform for real-time coordination of relief efforts with 200% efficiency improvement.",
-      problemStatement: "During disasters, lack of coordination between relief agencies leads to inefficient resource allocation and delayed response.",
-      solution: "A comprehensive disaster management platform that enables real-time coordination, resource tracking, and volunteer management.",
-      technologies: ["React", "Node.js", "MongoDB", "Socket.io", "MapBox", "Twilio", "AWS"],
-      team: [
-        { name: "Sree Charan", role: "Full Stack Developer & Lead" },
-        { name: "Anita Kumari", role: "Social Impact Specialist" },
-        { name: "Rahul Verma", role: "GIS Developer" },
-        { name: "Sneha Reddy", role: "Communication Systems Engineer" }
-      ],
-      prize: "₹1,00,000 + NGO Partnership",
-      participants: 200,
-      teams: 50,
-      duration: "48 hours",
-      theme: "Technology for Social Good",
-      
-      images: [
-        "/hackathon7-cover.jpg",
-        "/hackathon7-disaster.jpg",
-        "/hackathon7-team.jpg",
-        "/hackathon7-demo.jpg",
-        "/hackathon7-award.jpg",
-        "/hackathon7-impact.jpg"
-      ],
-      
-      links: {
-        github: "https://github.com/sreecharan/disaster-management",
-        demo: "https://disaster-relief-demo.netlify.app",
-        linkedin: "https://linkedin.com/posts/sreecharan/social-impact-tech",
-        impact: "https://sreecharan.com/disaster-relief-impact",
-        video: "https://youtube.com/watch?v=impact789"
-      },
-      
-      features: [
-        "Real-time Resource Tracking",
-        "Volunteer Coordination",
-        "Emergency Communication",
-        "Relief Camp Management",
-        "Donation Management",
-        "Impact Analytics"
-      ],
-      
-      timeline: [
-        { time: "Day 1 - 5 PM", event: "Disaster Response Research" },
-        { time: "Day 1 - 9 PM", event: "Platform Architecture Design" },
-        { time: "Day 2 - 1 AM", event: "Core Features Development" },
-        { time: "Day 2 - 9 AM", event: "Real-time Communication Setup" },
-        { time: "Day 2 - 3 PM", event: "Mapping & Location Services" },
-        { time: "Day 2 - 9 PM", event: "Testing with NGO Partners" },
-        { time: "Day 3 - 11 AM", event: "Impact Measurement Setup" },
-        { time: "Day 3 - 3 PM", event: "Social Impact Presentation" }
-      ],
-      
-      impact: {
-        responseEfficiency: "200%",
-        coordinationImprovement: "150%",
-        resourceUtilization: "180%",
-        ngoAdoption: "85%"
-      },
-      
-      recognition: [
-        "Best Social Impact Solution",
-        "Innovation for Good Award",
-        "NGO Partnership Award",
-        "Sustainable Development Recognition"
-      ]
-    }
-    
-    // Add more hackathons with similar detailed structure...
-  };
-
-  const hackathon = hackathonData[id];
-
-  if (!hackathon) {
+  if (loading) {
     return (
       <div className="hackathon-detail-container">
         <div className="container">
-          <div className="not-found">
-            <Title level={2}>Hackathon Not Found</Title>
-            <Button type="primary" onClick={() => navigate('/hackathons')}>
-              Back to Hackathons
-            </Button>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            minHeight: '50vh' 
+          }}>
+            <Spin 
+              size="large" 
+              indicator={<LoadingOutlined style={{ fontSize: 48, color: 'var(--accent-color)' }} spin />}
+            />
           </div>
         </div>
       </div>
     );
   }
+
+  if (error || !hackathon) {
+    return (
+      <div className="hackathon-detail-container">
+        <div className="container">
+          <Alert
+            message="Error Loading Hackathon"
+            description={error || 'Hackathon not found'}
+            type="error"
+            showIcon
+            style={{ margin: '2rem 0' }}
+            action={
+              <Button onClick={() => navigate('/')}>
+                Back to Portfolio
+              </Button>
+            }
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Parse data from database JSON strings or arrays
+  const parseJSON = (data, fallback = []) => {
+    if (!data) return fallback;
+    if (Array.isArray(data)) return data;
+    if (typeof data === 'string') {
+      try {
+        return JSON.parse(data);
+      } catch {
+        return data.split(',').map(item => item.trim());
+      }
+    }
+    return fallback;
+  };
+
+  const team = parseJSON(hackathon.team_members, []);
+  const features = parseJSON(hackathon.features, []);
+  const timeline = parseJSON(hackathon.timeline, []);
+  const recognition = parseJSON(hackathon.recognition, []);
+  const technologies = parseJSON(hackathon.technologies, []);
+  
+  // Create gallery array with main image first, then additional gallery images
+  const galleryImages = [];
+  if (hackathon.image_url) {
+    galleryImages.push(hackathon.image_url);
+  }
+  if (hackathon.gallery && hackathon.gallery.length > 0) {
+    const additionalImages = hackathon.gallery.map(g => g.image_url || g);
+    galleryImages.push(...additionalImages);
+  }
+  const gallery = galleryImages;
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Date TBD';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const nextImage = () => {
+    if (gallery.length > 0) {
+      setCurrentImageIndex((prev) => (prev + 1) % gallery.length);
+    }
+  };
+
+  const prevImage = () => {
+    if (gallery.length > 0) {
+      setCurrentImageIndex((prev) => 
+        prev === 0 ? gallery.length - 1 : prev - 1
+      );
+    }
+  };
+
+  const goToImage = (index) => {
+    setCurrentImageIndex(index);
+  };
 
   return (
     <div className="hackathon-detail-container">
@@ -592,275 +378,326 @@ const HackathonDetail = () => {
           </Button>
         </motion.div>
 
-        {/* Hero Section */}
-        <motion.div 
-          className="hackathon-hero"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <div className="hero-content">
-            <Tag color="gold" className="position-tag">
-              <TrophyOutlined /> {hackathon.position}
-            </Tag>
-            <Title level={1} className="hackathon-title">
-              {hackathon.title}
-            </Title>
-            <Title level={3} className="event-name">
-              {hackathon.event}
-            </Title>
-            <Paragraph className="hackathon-description">
-              {hackathon.description}
-            </Paragraph>
-            
-            {/* Quick Info */}
-            <div className="quick-info">
-              <Space size="large">
-                <Statistic 
-                  title="Prize" 
-                  value={hackathon.prize} 
-                  prefix={<TrophyOutlined />}
-                />
-                <Statistic 
-                  title="Duration" 
-                  value={hackathon.duration}
-                  prefix={<CalendarOutlined />}
-                />
-                <Statistic 
-                  title="Team Size" 
-                  value={hackathon.team.length}
-                  prefix={<TeamOutlined />}
-                />
-              </Space>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="action-buttons">
-              <Space size="middle">
-                <Button 
-                  type="primary" 
-                  size="large" 
-                  icon={<EyeOutlined />}
-                  href={hackathon.links.demo}
-                  target="_blank"
-                >
-                  Live Demo
-                </Button>
-                <Button 
-                  size="large" 
-                  icon={<GithubOutlined />}
-                  href={hackathon.links.github}
-                  target="_blank"
-                >
-                  View Code
-                </Button>
-                <Button 
-                  size="large" 
-                  icon={<PlayCircleOutlined />}
-                  href={hackathon.links.video}
-                  target="_blank"
-                >
-                  Watch Demo
-                </Button>
-                <Button 
-                  size="large" 
-                  icon={<LinkedinOutlined />}
-                  href={hackathon.links.linkedin}
-                  target="_blank"
-                >
-                  LinkedIn Post
-                </Button>
-              </Space>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Image Gallery */}
-        <motion.div 
-          className="image-gallery-section"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          <Title level={2}>Project Gallery</Title>
-          <Carousel 
-            autoplay 
-            dots={true}
-            className="project-carousel"
-            afterChange={setCurrentImageIndex}
-          >
-            {hackathon.images.map((image, index) => (
-              <div key={index} className="carousel-slide">
-                <Image
-                  src={image}
-                  alt={`${hackathon.title} - Image ${index + 1}`}
+        {/* Main Content */}
+        <Row gutter={[32, 32]}>
+          {/* Left Column - Images and Basic Info */}
+          <Col xs={24} lg={12}>
+            {/* Image Gallery */}
+            <motion.div
+              className="image-gallery"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="main-image">
+                <img 
+                  src={gallery[currentImageIndex] || hackathon.image_url || '/placeholder-hackathon.jpg'}
+                  alt={`${hackathon.title} ${currentImageIndex + 1}`}
                   className="gallery-image"
-                  fallback="/placeholder-project.jpg"
+                  onError={(e) => {
+                    e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkhhaGF0aG9uIFByb2plY3Q8L3RleHQ+PC9zdmc+';
+                  }}
                 />
+                
+                {/* Navigation Arrows */}
+                {gallery.length > 1 && (
+                  <>
+                    <Button 
+                      className="nav-arrow prev-arrow"
+                      icon={<LeftOutlined />}
+                      onClick={prevImage}
+                      type="primary"
+                      shape="circle"
+                    />
+                    <Button 
+                      className="nav-arrow next-arrow"
+                      icon={<RightOutlined />}
+                      onClick={nextImage}
+                      type="primary"
+                      shape="circle"
+                    />
+                  </>
+                )}
               </div>
-            ))}
-          </Carousel>
-          
-          {/* Thumbnail Navigation */}
-          <div className="thumbnail-nav">
-            {hackathon.images.map((image, index) => (
-              <div 
-                key={index}
-                className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`}
-                onClick={() => setCurrentImageIndex(index)}
-              >
-                <Image
-                  src={image}
-                  alt={`Thumbnail ${index + 1}`}
-                  preview={false}
-                  fallback="/placeholder-project.jpg"
-                />
-              </div>
-            ))}
-          </div>
-        </motion.div>
 
-        {/* Project Details Grid */}
-        <motion.div 
-          className="project-details"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          <Row gutter={[32, 32]}>
+              {/* Thumbnail Gallery */}
+              {gallery.length > 1 && (
+                <div className="thumbnail-gallery">
+                  {gallery.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Thumbnail ${index + 1}`}
+                      className={`thumbnail ${currentImageIndex === index ? 'active' : ''}`}
+                      onClick={() => goToImage(index)}
+                    />
+                  ))}
+                </div>
+              )}
+            </motion.div>
+
+            {/* Basic Information Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <Card className="info-card">
+                <div className="hackathon-header">
+                  <Title level={2} className="hackathon-title">
+                    {hackathon.title}
+                  </Title>
+                  <Tag color="gold" className="position-tag">
+                    <TrophyOutlined /> {hackathon.position}
+                  </Tag>
+                </div>
+
+                <div className="hackathon-meta">
+                  <div className="meta-item">
+                    <CalendarOutlined />
+                    <span>
+                      {hackathon.start_date && hackathon.end_date 
+                        ? `${formatDate(hackathon.start_date)} - ${formatDate(hackathon.end_date)}`
+                        : formatDate(hackathon.start_date || hackathon.date)
+                      }
+                    </span>
+                  </div>
+                  <div className="meta-item">
+                    <EnvironmentOutlined />
+                    <span>{hackathon.location}</span>
+                  </div>
+                  <div className="meta-item">
+                    <TeamOutlined />
+                    <span>{hackathon.participants || 'N/A'} Participants</span>
+                  </div>
+                </div>
+
+                <Paragraph className="description">
+                  {hackathon.description}
+                </Paragraph>
+
+                {/* Technologies */}
+                {technologies.length > 0 && (
+                  <div className="technologies">
+                    <Title level={4}>Technologies Used</Title>
+                    <div className="tech-tags">
+                      {technologies.map((tech, index) => (
+                        <Tag key={index} color="blue">
+                          {typeof tech === 'object' ? tech.name : tech}
+                        </Tag>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </Card>
+            </motion.div>
+          </Col>
+
+          {/* Right Column - Detailed Information */}
+          <Col xs={24} lg={12}>
             {/* Problem & Solution */}
-            <Col xs={24} lg={12}>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+            >
               <Card className="detail-card">
                 <Title level={3}>Problem Statement</Title>
-                <Paragraph>{hackathon.problemStatement}</Paragraph>
-                
-                <Divider />
+                <Paragraph>{hackathon.problem_statement}</Paragraph>
                 
                 <Title level={3}>Our Solution</Title>
                 <Paragraph>{hackathon.solution}</Paragraph>
               </Card>
-            </Col>
+            </motion.div>
 
-            {/* Technical Stack */}
-            <Col xs={24} lg={12}>
-              <Card className="detail-card">
-                <Title level={3}>
-                  <FiCode style={{ marginRight: 8 }} />
-                  Technology Stack
-                </Title>
-                <div className="tech-tags">
-                  {hackathon.technologies.map((tech, index) => (
-                    <Tag key={index} color="blue" className="tech-tag">
-                      {tech}
-                    </Tag>
-                  ))}
-                </div>
-                
-                <Divider />
-                
-                <Title level={3}>
-                  <FiUsers style={{ marginRight: 8 }} />
-                  Team Members
-                </Title>
-                {hackathon.team.map((member, index) => (
-                  <div key={index} className="team-member">
-                    <Text strong>{member.name}</Text>
-                    <br />
-                    <Text type="secondary">{member.role}</Text>
-                  </div>
-                ))}
-              </Card>
-            </Col>
+            {/* Team Members */}
+            {team.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <Card className="detail-card">
+                  <Title level={3}>Team Members</Title>
+                  <Row gutter={[16, 16]}>
+                    {team.map((member, index) => (
+                      <Col xs={24} sm={12} key={index}>
+                        <div className="team-member">
+                          <Text strong>
+                            {member.name || (typeof member === 'string' ? member : member.name)}
+                          </Text>
+                          {member.role && (
+                            <div className="member-role">{member.role}</div>
+                          )}
+                        </div>
+                      </Col>
+                    ))}
+                  </Row>
+                </Card>
+              </motion.div>
+            )}
 
-            {/* Features */}
-            <Col xs={24} lg={12}>
-              <Card className="detail-card">
-                <Title level={3}>Key Features</Title>
-                <ul className="features-list">
-                  {hackathon.features.map((feature, index) => (
-                    <li key={index}>{feature}</li>
-                  ))}
-                </ul>
-              </Card>
-            </Col>
+            {/* Key Features */}
+            {features.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                <Card className="detail-card">
+                  <Title level={3}>Key Features</Title>
+                  <ul className="features-list">
+                    {features.map((feature, index) => (
+                      <li key={index}>
+                        {typeof feature === 'object' ? feature.feature_text || feature.feature_name : feature}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </motion.div>
+            )}
 
-            {/* Impact & Results */}
-            <Col xs={24} lg={12}>
-              <Card className="detail-card">
-                <Title level={3}>
-                  <FiAward style={{ marginRight: 8 }} />
-                  Impact & Results
-                </Title>
-                <Row gutter={[16, 16]}>
-                  {Object.entries(hackathon.impact).map(([key, value]) => (
-                    <Col xs={12} key={key}>
-                      <Statistic
-                        title={key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                        value={value}
-                        valueStyle={{ color: '#52c41a' }}
-                      />
-                    </Col>
-                  ))}
-                </Row>
-              </Card>
-            </Col>
-          </Row>
-        </motion.div>
+            {/* Timeline */}
+            {timeline.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                <Card className="detail-card">
+                  <Title level={3}>Development Timeline</Title>
+                  <Timeline>
+                    {timeline.map((item, index) => (
+                      <Timeline.Item key={index}>
+                        <div className="timeline-content">
+                          <Text strong>
+                            {typeof item === 'object' 
+                              ? (item.time_description || item.time || `Event ${index + 1}`)
+                              : item.time || `Event ${index + 1}`
+                            }
+                          </Text>
+                          <div>
+                            {typeof item === 'object' 
+                              ? (item.event_description || item.event || 'Event description')
+                              : item.event || 'Event description'
+                            }
+                          </div>
+                        </div>
+                      </Timeline.Item>
+                    ))}
+                  </Timeline>
+                </Card>
+              </motion.div>
+            )}
 
-        {/* Development Timeline */}
-        <motion.div 
-          className="timeline-section"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-        >
-          <Title level={2}>Development Timeline</Title>
-          <Timeline mode="left" className="project-timeline">
-            {hackathon.timeline.map((item, index) => (
-              <Timeline.Item key={index} label={item.time}>
-                {item.event}
-              </Timeline.Item>
-            ))}
-          </Timeline>
-        </motion.div>
+            {/* Recognition & Awards */}
+            {recognition.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+              >
+                <Card className="detail-card">
+                  <Title level={3}>Recognition & Awards</Title>
+                  <ul className="recognition-list">
+                    {recognition.map((award, index) => (
+                      <li key={index}>
+                        <TrophyOutlined className="award-icon" />
+                        {typeof award === 'object' 
+                          ? (award.award_title || award.title || 'Award')
+                          : award
+                        }
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </motion.div>
+            )}
 
-        {/* Recognition & Awards */}
-        <motion.div 
-          className="recognition-section"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-        >
-          <Title level={2}>Recognition & Awards</Title>
-          <div className="recognition-grid">
-            {hackathon.recognition.map((award, index) => (
-              <Card key={index} className="recognition-card">
-                <TrophyOutlined className="recognition-icon" />
-                <Text strong>{award}</Text>
-              </Card>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* More Projects CTA */}
-        <motion.div 
-          className="more-projects-cta"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.0 }}
-        >
-          <Card className="cta-card">
-            <Title level={3}>Explore More Hackathon Projects</Title>
-            <Paragraph>
-              Check out my other hackathon wins and innovative projects.
-            </Paragraph>
-            <Button 
-              type="primary" 
-              size="large"
-              onClick={() => navigate('/')}
+            {/* Project Links */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
             >
-              View All Hackathons
-            </Button>
+              <Card className="detail-card">
+                <Title level={3}>Project Links</Title>
+                <div className="project-links">
+                  {hackathon.github_url && (
+                    <Button 
+                      icon={<GithubOutlined />} 
+                      href={hackathon.github_url}
+                      target="_blank"
+                      className="link-button"
+                    >
+                      GitHub Repository
+                    </Button>
+                  )}
+                  {hackathon.demo_url && (
+                    <Button 
+                      icon={<LinkOutlined />} 
+                      href={hackathon.demo_url}
+                      target="_blank"
+                      className="link-button"
+                    >
+                      Live Demo
+                    </Button>
+                  )}
+                  {hackathon.video_url && (
+                    <Button 
+                      icon={<PlayCircleOutlined />} 
+                      href={hackathon.video_url}
+                      target="_blank"
+                      className="link-button"
+                    >
+                      Demo Video
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            </motion.div>
+          </Col>
+        </Row>
+
+        {/* Statistics Section */}
+        <motion.div
+          className="statistics-section"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.7 }}
+        >
+          <Card className="statistics-card">
+            <Title level={3} className="section-title">Event Statistics</Title>
+            <Row gutter={[32, 32]}>
+              <Col xs={12} sm={6}>
+                <Statistic
+                  title="Participants"
+                  value={hackathon.participants || 0}
+                  valueStyle={{ color: 'var(--accent-color)' }}
+                />
+              </Col>
+              <Col xs={12} sm={6}>
+                <Statistic
+                  title="Teams"
+                  value={hackathon.teams || 0}
+                  valueStyle={{ color: 'var(--accent-color)' }}
+                />
+              </Col>
+              <Col xs={12} sm={6}>
+                <Statistic
+                  title="Duration"
+                  value={hackathon.duration || '48 hours'}
+                  valueStyle={{ color: 'var(--accent-color)' }}
+                />
+              </Col>
+              <Col xs={12} sm={6}>
+                <Statistic
+                  title="Prize"
+                  value={`₹${(hackathon.prize_amount || hackathon.prize || 0).toLocaleString()}`}
+                  valueStyle={{ color: 'var(--accent-color)' }}
+                />
+              </Col>
+            </Row>
           </Card>
         </motion.div>
       </div>

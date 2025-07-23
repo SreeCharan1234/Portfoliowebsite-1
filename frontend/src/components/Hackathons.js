@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Card, Tag, Button, Spin, Alert, Empty } from 'antd';
 import { TrophyOutlined, CalendarOutlined, TeamOutlined, LoadingOutlined } from '@ant-design/icons';
 import { FiAward, FiUsers, FiCalendar, FiExternalLink, FiEye } from 'react-icons/fi';
-import { hackathonAPI } from '../services/api';
 import './Hackathons.css';
 
 const Hackathons = () => {
@@ -13,81 +12,151 @@ const Hackathons = () => {
     triggerOnce: true
   });
 
-  const [hackathons, setHackathons] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Fallback data in case API fails
-  const fallbackHackathons = [
+  // Static hackathon data
+  const hackathons = [
     {
       id: 1,
-      title: "Smart City Solutions Hackathon",
-      event_name: "TechFest 2024",
-      position: "1st Place",
-      start_date: "2024-03-15",
-      description: "Developed an AI-powered traffic management system that reduces congestion by 30% using real-time data analysis.",
+      title: "Code-a-Haunt Halloween Hackathon",
+      organization: "Code-a-Haunt 2024",
+      position: "Participant",
+      date: "October 2024",
+      description: "Spooky themed hackathon where we created Halloween-inspired tech solutions with a creative twist.",
       technologies: [
-        { name: "React" }, { name: "Python" }, { name: "TensorFlow" }, { name: "MongoDB" }
+        { name: "Python" }, { name: "Flask" }, { name: "JavaScript" }, { name: "CSS" }
       ],
-      team_size_actual: 4,
-      prize_amount: 50000,
-      project_url: "https://github.com/sreecharan/smart-traffic"
+      team_size: 3,
+      prize_money: "₹8,000",
+      main_image: "/photo/code-a-haunt/main.jpg",
+      image_url: "/photo/code-a-haunt/main.jpg",
+      highlights: [
+        { title: "Halloween Theme", description: "Created spooky interactive experiences" },
+        { title: "Web Technologies", description: "Used Flask and JavaScript for interactivity" },
+        { title: "Creative Design", description: "Implemented haunting visual effects" }
+      ]
     },
     {
       id: 2,
-      title: "FinTech Innovation Challenge",
-      event_name: "Banking Summit 2024",
-      position: "1st Place",
-      start_date: "2024-02-20",
-      description: "Created a blockchain-based micro-lending platform for rural communities with 99.9% security rating.",
+      title: "Code of Duty Gaming Hackathon",
+      organization: "Gaming Community 2024",
+      position: "Winner",
+      date: "September 2024",
+      description: "Gaming-focused hackathon where we developed innovative gaming solutions and interactive experiences.",
       technologies: [
-        { name: "Blockchain" }, { name: "Solidity" }, { name: "React" }, { name: "Node.js" }
+        { name: "Unity" }, { name: "C#" }, { name: "JavaScript" }, { name: "WebGL" }
       ],
-      team_size_actual: 3,
-      prize_amount: 75000,
-      project_url: "https://github.com/sreecharan/rural-lending"
+      team_size: 4,
+      prize_money: "₹20,000",
+      main_image: "/photo/code-of-duty/main.jpg",
+      image_url: "/photo/code-of-duty/main.jpg",
+      highlights: [
+        { title: "Real-time Multiplayer", description: "Created engaging multiplayer experiences" },
+        { title: "Game Design", description: "Developed innovative game mechanics" },
+        { title: "Cross-platform", description: "Works on web and mobile platforms" }
+      ]
     },
     {
       id: 3,
-      title: "Healthcare AI Hackathon",
-      event_name: "MedTech 2023",
-      position: "2nd Place",
-      start_date: "2023-12-10",
-      description: "Built an AI diagnostic tool for early detection of diseases using medical imaging with 95% accuracy.",
+      title: "Code Cubicle by Microsoft",
+      organization: "Microsoft & Geek Room",
+      position: "3rd Runners-up",
+      date: "August 2024",
+      description: "Incredible journey to becoming 3rd runners-up at the Code Cubicle by Geek Room at Microsoft! Team 'The Losers' built our entire project in just 7 days!",
       technologies: [
-        { name: "Python" }, { name: "PyTorch" }, { name: "Flask" }, { name: "OpenCV" }
+        { name: "Python" }, { name: "Streamlit" }, { name: "Web Scraping" }, { name: "Data Science" }
       ],
-      team_size_actual: 5,
-      prize_amount: 30000,
-      project_url: "https://github.com/sreecharan/ai-diagnostic"
-    }
+      team_size: 5,
+      prize_money: "₹5,000",
+      main_image: "/photo/microsoft/main.jpg",
+      image_url: "/photo/microsoft/main.jpg",
+      highlights: [
+        { title: "Data Analytics", description: "Built intuitive data visualization" },
+        { title: "Microsoft Technologies", description: "Integrated with Microsoft cloud services" },
+        { title: "Rapid Development", description: "Complete project in just 7 days" }
+      ]
+    },
+    {
+      id: 4,
+      title: "Arena Hackathon",
+      organization: "Lovely Professional University",
+      position: "Winner",
+      date: "June 2024",
+      description: "Developed an innovative job portal with AI features including resume builder, personalized roadmap builder, and chatbot assistance.",
+      technologies: [
+        { name: "React" }, { name: "AI/ML" }, { name: "Full Stack" }, { name: "UI/UX" }
+      ],
+      team_size: 4,
+      prize_money: "Internship + Prize",
+      main_image: "/photo/arena/main.jpg",
+      image_url: "/photo/arena/2.jpg",
+      highlights: [
+        { title: "AI-Powered", description: "Smart resume and roadmap builder" },
+        { title: "User Experience", description: "Intuitive and accessible design" },
+        { title: "Career Tools", description: "Comprehensive job search assistance" }
+      ]
+    },
+    {
+      id: 5,
+      title: "DevFest Jalandhar ",
+      organization: "Google Developer Groups",
+      position: "Winner",
+      date: "December 2024",
+      description: "Won DevFest Jalandhar, a tech conference hosted by Google Developer Groups Jalandhar, bringing developers together to learn and innovate. Judges were so impressed that they awarded us monetary rewards and goodies, including exclusive event T-shirts.",
+      technologies: [
+        { name: "React" }, { name: "Node.js" }, { name: "AI/ML" }, { name: "Google Cloud" }
+      ],
+      team_size: 4,
+      prize_money: "₹15,000",
+      main_image: "/photo/devfest/main.jpg",
+      image_url: "/photo/devfest/main.jpg",
+      highlights: [
+        { title: "Google Tools Integration", description: "Built using Google's cutting-edge tools" },
+        { title: "Innovation Focus", description: "Explored new ideas with Google's ecosystem" },
+        { title: "Event T-shirts & Goodies", description: "Received exclusive event merchandise" }
+      ]
+    },
+    {
+      id: 6,
+      title: "coding Blocks LPU",
+      organization: "Love Babbar",
+      position: "Third Position",
+      date: "October 2024",
+      description: "Spooky themed hackathon where we created Halloween-inspired tech solutions with a creative twist.",
+      technologies: [
+        { name: "Python" }, { name: "Flask" }, { name: "JavaScript" }, { name: "CSS" }
+      ],
+      team_size: 3,
+      prize_money: "₹8,000",
+      main_image: "/photo/codingblockslpu/main.jpg",
+      image_url: "/photo/codingblockslpu/main.jpg",
+      highlights: [
+        { title: "Google Tools Integration", description: "Built using Google's cutting-edge tools" },
+        { title: "Innovation Focus", description: "Explored new ideas with Google's ecosystem" },
+        { title: "Event T-shirts & Goodies", description: "Received exclusive event merchandise" }
+      ]
+    },
+    {
+      id: 9,
+      title: "Unstop Hackathon",
+      organization: "Chandigarh University",
+      position: "Winner",
+      date: "June 2024",
+      description: "Developed an innovative job portal with AI features including resume builder, personalized roadmap builder, and chatbot assistance.",
+      technologies: [
+        { name: "React" }, { name: "AI/ML" }, { name: "Full Stack" }, { name: "UI/UX" }
+      ],
+      team_size: 4,
+      prize_money: "Internship + Prize",
+      main_image: "/photo/other/main.jpg",
+      image_url: "/photo/other/3.jpg",
+    },
+    
   ];
+  
+  // Static data doesn't need loading state
+  const loading = false;
+  const error = null;
 
-  useEffect(() => {
-    const fetchHackathons = async () => {
-      try {
-        setLoading(true);
-        const response = await hackathonAPI.getAllHackathons();
-        
-        if (response.success && response.hackathons.length > 0) {
-          setHackathons(response.hackathons);
-        } else {
-          // Use fallback data if no hackathons from API
-          setHackathons(fallbackHackathons);
-        }
-        setError(null);
-      } catch (err) {
-        console.error('Failed to fetch hackathons:', err);
-        setError('Failed to load hackathons from server. Showing sample data.');
-        setHackathons(fallbackHackathons);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHackathons();
-  }, []);
-
+  // This section won't execute since loading is always false
   if (loading) {
     return (
       <section className="hackathons-section">
@@ -210,9 +279,10 @@ const Hackathons = () => {
                 cover={
                   <div className="hackathon-image">
                     <img 
-                      src={hackathon.image} 
+                      src={hackathon.image_url || '/photo/other/main.jpg'} 
                       alt={hackathon.title}
                       onError={(e) => {
+                        console.log('Image failed to load:', e.target.src);
                         e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkhhY2thdGhvbiBQcm9qZWN0PC90ZXh0Pjwvc3ZnPg==';
                       }}
                     />
@@ -246,14 +316,14 @@ const Hackathons = () => {
                 <div className="hackathon-header">
                   <h3 className="hackathon-title">{hackathon.title}</h3>
                   <Tag color="blue" className="event-tag">
-                    {hackathon.event_name}
+                    {hackathon.organization || hackathon.event_name}
                   </Tag>
                 </div>
 
                 <div className="hackathon-meta">
                   <div className="meta-item">
                     <CalendarOutlined />
-                    <span>{formatDate(hackathon.start_date)}</span>
+                    <span>{formatDate(hackathon.date || hackathon.start_date)}</span>
                   </div>
                   <div className="meta-item">
                     <TeamOutlined />
@@ -261,7 +331,7 @@ const Hackathons = () => {
                   </div>
                   <div className="meta-item prize">
                     <TrophyOutlined />
-                    <span>{formatPrize(hackathon.prize_amount)}</span>
+                    <span>{hackathon.prize_money || formatPrize(hackathon.prize_amount)}</span>
                   </div>
                 </div>
 
@@ -297,13 +367,12 @@ const Hackathons = () => {
           </div>
           <div className="stat-item">
             <div className="stat-number">
-              {hackathons.filter(h => h.position?.includes('1st')).length}
+              {hackathons.filter(h => h.position?.includes('Winner')).length}
             </div>
             <div className="stat-label">First Places</div>
           </div>
           <div className="stat-item">
-            <div className="stat-number">
-              ₹{Math.round(hackathons.reduce((sum, h) => sum + (h.prize_amount || 0), 0) / 1000)}K+
+            <div className="stat-number">₹85K+
             </div>
             <div className="stat-label">Total Prize Money</div>
           </div>
